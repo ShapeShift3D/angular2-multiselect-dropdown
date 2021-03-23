@@ -318,23 +318,26 @@ export class AngularMultiSelect implements OnInit, ControlValueAccessor, OnChang
                 if (this.settings.groupBy) {
                     this.groupedData = this.transformData(this.data, this.settings.groupBy);
                     this.groupCachedItems = this.cloneArray(this.groupedData);
-                    this.selectedItems = [value[0]];
-                } else {
-                    try {
-
-                        if (value.length > 1) {
+                }
+                try {
+                    if(Array.isArray(value)) {
+                         if (value.length === 1) {
                             this.selectedItems = [value[0]];
-                            throw new MyException(404, { "msg": "Single Selection Mode, Selected Items cannot have more than one item." });
                         }
+                        else if(value.length > 1) {
+                            throw new MyException(404, { "msg": "Single Selection Mode, Selected Items cannot have more than one item." });
+                        } 
                         else {
                             this.selectedItems = value;
                         }
-                    }
-                    catch (e) {
-                        console.error(e.body.msg);
+                    } 
+                    else {
+                        this.selectedItems = value;
                     }
                 }
-
+                catch (e) {
+                    console.error(e.body.msg);
+                }
             }
             else {
                 if (this.settings.limitSelection) {
